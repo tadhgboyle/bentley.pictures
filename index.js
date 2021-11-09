@@ -34,7 +34,7 @@ app.get('/api/:id', (req, res) => {
     if (image) {
         res.json({
             id: req.params.id,
-            url: 'https://bentley.tadhg.sh/' + image
+            url: 'http://bentley.tadhg.sh/' + image
         });
     } else {
         res.json({
@@ -76,6 +76,6 @@ const getRandomImageApi = () => {
     const id = path.substring(0, path.length - 4).split('-')[1];
     return {
         id: id,
-        url: 'https://bentley.tadhg.sh/' + id
+        url: 'http://bentley.tadhg.sh/' + id
     };
 };
