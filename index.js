@@ -34,7 +34,7 @@ app.get('/api/:id', (req, res) => {
     if (image) {
         return res.json({
             id: req.params.id,
-            url: 'https://bentley-tadhg-sh.herokuapp.com/' + image
+            url: 'https://bentley.tadhg.sh/' + image
         });
     } else {
         return res.json({
@@ -74,6 +74,6 @@ const getRandomImageApi = () => {
     const id = path.substring(0, path.length - 4).split('-')[1];
     return {
         id: id,
-        url: 'https://bentley-tadhg-sh.herokuapp.com/' + id
+        url: 'https://bentley.tadhg.sh/' + id
     };
 };
