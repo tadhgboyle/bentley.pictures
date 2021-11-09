@@ -5,7 +5,7 @@ const fs = require('fs');
 app.get('/', (req, res) => {
     res.sendFile(getRandomImagePath(), (err) => {
         if (err) {
-            res.status(500).send(err);
+            res.status(err.status).end();
         }
     });
 });
@@ -15,29 +15,29 @@ app.get('/:id', (req, res) => {
     if (image) {
         res.sendFile(image, (err) => {
             if (err) {
-                res.status(500).send(err);
+                res.status(err.status).end();
             }
         });
     } else {
-        res.json({
+        return res.json({
             error: 'Image not found'
         });
     }
 });
 
 app.get('/api/random', (req, res) => {
-    res.json(getRandomImageApi());
+    return res.json(getRandomImageApi());
 });
 
 app.get('/api/:id', (req, res) => {
     const image = getImageById(req.params.id, false);
     if (image) {
-        res.json({
+        return res.json({
             id: req.params.id,
             url: 'https://bentley-tadhg-sh.herokuapp.com/' + image
         });
     } else {
-        res.json({
+        return res.json({
             error: 'Image not found'
         });
     }
@@ -50,9 +50,7 @@ app.listen(port, () => {
 
 const getRandomImagePath = () => {
     const images = fs.readdirSync('./images');
-    const image = __dirname + '/images/' + images[Math.floor(Math.random() * images.length)];
-    console.log(image);
-    return image;
+    return  __dirname + '/images/' + images[Math.floor(Math.random() * images.length)];
 };
 
 const getImageById = (id, path = true) => {
