@@ -34,7 +34,7 @@ app.get('/api/:id', (req, res) => {
     if (image) {
         return res.json({
             id: req.params.id,
-            url: 'https://bentley.tadhg.sh/' + image
+            url: 'https://bentley.tadhg.sh/' + req.params.id
         });
     } else {
         return res.json({
