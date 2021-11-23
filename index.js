@@ -33,7 +33,7 @@ app.get('/api/:id', (req, res) => {
     const image = getImageById(req.params.id, false);
     if (image) {
         return res.json({
-            id: req.params.id,
+            id: parseInt(req.params.id),
             url: 'https://bentley.tadhg.sh/' + req.params.id
         });
     } else {
