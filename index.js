@@ -73,7 +73,7 @@ const getRandomImageApi = () => {
     const path = getRandomImagePath();
     const id = path.substring(0, path.length - 4).split('-')[1];
     return {
-        id: id,
+        id: parseInt(id),
         url: 'https://bentley.tadhg.sh/' + id
     };
 };
