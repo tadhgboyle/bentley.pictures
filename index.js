@@ -34,7 +34,8 @@ app.get('/api/:id', (req, res) => {
     if (image) {
         return res.json({
             id: parseInt(req.params.id),
-            url: 'https://bentley.tadhg.sh/' + req.params.id
+            url: 'https://bentley.tadhg.sh/' + req.params.id,
+            date: fs.statSync(image).birthtime
         });
     } else {
         return res.json({
@@ -74,6 +75,7 @@ const getRandomImageApi = () => {
     const id = path.substring(0, path.length - 4).split('-')[1];
     return {
         id: parseInt(id),
-        url: 'https://bentley.tadhg.sh/' + id
+        url: 'https://bentley.tadhg.sh/' + id,
+        date: fs.statSync(path).birthtime
     };
 };
