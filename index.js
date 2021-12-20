@@ -25,7 +25,7 @@ app.get('/:id', (req, res) => {
     }
 });
 
-app.get('/api/all', (req, res) => {
+app.get('/api/list', (req, res) => {
    return res.json(getAllImageIds());
 });
 
