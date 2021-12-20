@@ -25,6 +25,10 @@ app.get('/:id', (req, res) => {
     }
 });
 
+app.get('/api/all', (req, res) => {
+   return res.json(getAllImageIds());
+});
+
 app.get('/api/random', (req, res) => {
     return res.json(getRandomImageApi());
 });
@@ -57,7 +61,7 @@ const getImageById = (id, path = true) => {
     const images = fs.readdirSync('./images');
 
     for (const image of images) {
-        if (image.substring(0, image.length - 4) .split('-')[1] === id) {
+        if (image.substring(0, image.length - 4).split('-')[1] === id) {
             if (path) {
                 return __dirname + '/images/' + image;
             } else {
@@ -67,6 +71,16 @@ const getImageById = (id, path = true) => {
     }
 
     return null;
+};
+
+const getAllImageIds = () => {
+    const ids = [];
+
+    fs.readdirSync('./images').forEach(image => {
+        ids.push(parseInt(image.substring(0, image.length - 4) .split('-')[1]));
+    });
+
+    return ids.sort((a, b) => a - b);
 };
 
 const getRandomImageApi = () => {
