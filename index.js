@@ -61,7 +61,10 @@ const getImageById = (id, path = true) => {
     const images = fs.readdirSync('./images');
 
     for (const image of images) {
-        if (image.substring(0, image.length - 4).split('-')[1] === id) {
+        if (image === '.DS_Store') {
+            continue;
+        }
+        if (image.substring(8, image.length - 4) === id) {
             if (path) {
                 return __dirname + '/images/' + image;
             } else {
@@ -77,7 +80,9 @@ const getAllImageIds = () => {
     const ids = [];
 
     fs.readdirSync('./images').forEach(image => {
-        ids.push(parseInt(image.substring(0, image.length - 4) .split('-')[1]));
+        if (image !== '.DS_Store') {
+            ids.push(parseInt(image.substring(8, image.length - 4)));
+        }
     });
 
     return ids.sort((a, b) => a - b);
