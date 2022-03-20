@@ -81,7 +81,7 @@ const getAllImageIds = () => {
 
     fs.readdirSync('./images').forEach(image => {
         if (image !== '.DS_Store') {
-            ids.push(parseInt(image.substring(8, image.length - 4)));
+            ids.push(image.substring(8, image.length - 4));
         }
     });
 
