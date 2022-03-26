@@ -64,7 +64,7 @@ const getImageById = (id, path = true) => {
         if (image === '.DS_Store') {
             continue;
         }
-        if (image.substring(8, image.length - 4) === id) {
+        if (image.toLowerCase() === ('bentley-' + id).toLowerCase() || image.substring(8, image.length - 4) === id) {
             if (path) {
                 return __dirname + '/images/' + image;
             } else {
