@@ -1,6 +1,15 @@
 const express = require('express');
 const app = express();
 const fs = require('fs');
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const serviceAccount = require('./bentley-image-api-93e27972c918.json');
+
+initializeApp({
+    credential: cert(serviceAccount)
+});
+
+const db = getFirestore();
 
 app.get('/', (req, res) => {
     res.sendFile(getRandomImagePath(), (err) => {
@@ -10,7 +19,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/:id', (req, res) => {
+app.get('/:id', async (req, res) => {
     const image = getImageById(req.params.id);
     if (image) {
         res.sendFile(image, (err) => {
@@ -18,11 +27,22 @@ app.get('/:id', (req, res) => {
                 res.status(err.status).end();
             }
         });
+        await incrementImageViews(req.params.id);
     } else {
         return res.json({
             error: 'Image not found'
         });
     }
+});
+
+app.get('/api/stats', async (req, res) => {
+    const data = await db.collection('image_stats').orderBy('views', 'desc').get();
+    return res.json(data.docs.map(doc => {
+        return {
+            id: doc.id,
+            views: doc.data().views
+        };
+    }));
 });
 
 app.get('/api/list', (req, res) => {
@@ -33,15 +53,16 @@ app.get('/api/random', (req, res) => {
     return res.json(getRandomImageApi());
 });
 
-app.get('/api/:id', (req, res) => {
+app.get('/api/:id', async (req, res) => {
     const image = getImageById(req.params.id, false);
     if (image) {
-        return res.json({
+        res.json({
             id: parseInt(req.params.id),
             url: 'https://bentley.tadhg.sh/' + image.substring(8),
         });
+        await incrementImageViews(req.params.id);
     } else {
-        return res.json({
+        res.json({
             error: 'Image not found'
         });
     }
@@ -59,7 +80,6 @@ const getRandomImagePath = () => {
 
 const getImageById = (id, path = true) => {
     const images = fs.readdirSync('./images');
-
     for (const image of images) {
         if (image === '.DS_Store') {
             continue;
@@ -95,4 +115,18 @@ const getRandomImageApi = () => {
         id: parseInt(id),
         url: 'https://bentley.tadhg.sh/' + id,
     };
+};
+
+const incrementImageViews = async (id) => {
+    const docRef = db.collection('image_stats').doc(id);
+    const doc = await docRef.get();
+    if (doc.exists) {
+        await docRef.update({
+            views: FieldValue.increment(1)
+        });
+    } else {
+        await docRef.set({
+            views: 1
+        });
+    }
 };
