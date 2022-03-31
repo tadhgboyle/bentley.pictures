@@ -38,7 +38,7 @@ app.get('/api/:id', (req, res) => {
     if (image) {
         return res.json({
             id: parseInt(req.params.id),
-            url: 'https://bentley.tadhg.sh/' + req.params.id,
+            url: 'https://bentley.tadhg.sh/' + image.substring(8),
         });
     } else {
         return res.json({
@@ -64,7 +64,7 @@ const getImageById = (id, path = true) => {
         if (image === '.DS_Store') {
             continue;
         }
-        if (image.toLowerCase() === ('bentley-' + id).toLowerCase() || image.substring(8, image.length - 4) === id) {
+        if (image === 'bentley-' + id || image.substring(8, image.length - 4) === id) {
             if (path) {
                 return __dirname + '/images/' + image;
             } else {
@@ -90,7 +90,7 @@ const getAllImageIds = () => {
 
 const getRandomImageApi = () => {
     const path = getRandomImagePath();
-    const id = path.substring(0, path.length - 4).split('-')[1];
+    const id = path.split('-')[1];
     return {
         id: parseInt(id),
         url: 'https://bentley.tadhg.sh/' + id,
