@@ -3,7 +3,7 @@ const app = express();
 const fs = require('fs');
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
-const serviceAccount = require('./bentley-image-api-93e27972c918.json');
+const serviceAccount = require('./firebase-creds.json');
 
 initializeApp({
     credential: cert(serviceAccount)
