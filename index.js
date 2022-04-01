@@ -118,7 +118,7 @@ const getRandomImageApi = () => {
 };
 
 const incrementImageViews = async (id) => {
-    const docRef = db.collection('image_stats').doc(id);
+    const docRef = db.collection('image_stats').doc(id.split('.')[0]);
     const doc = await docRef.get();
     if (doc.exists) {
         await docRef.update({
