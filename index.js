@@ -53,14 +53,13 @@ app.get('/api/random', (req, res) => {
     return res.json(getRandomImageApi());
 });
 
-app.get('/api/:id', async (req, res) => {
+app.get('/api/:id', (req, res) => {
     const image = getImageById(req.params.id, false);
     if (image) {
         res.json({
             id: parseInt(req.params.id),
             url: 'https://bentley.tadhg.sh/' + image.substring(8),
         });
-        await incrementImageViews(req.params.id);
     } else {
         res.json({
             error: 'Image not found'
