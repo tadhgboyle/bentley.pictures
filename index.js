@@ -138,7 +138,14 @@ const incrementImageViews = async (id) => {
 
 const incrementSiteVisits = async (path) => {
     const docRef = db.collection('site_visits').doc(path);
-    await docRef.create({
-        time: FieldValue.serverTimestamp(),
-    });
+    const doc = await docRef.get();
+    if (doc.exists) {
+        await docRef.update({
+            visits: FieldValue.increment(1)
+        });
+    } else {
+        await docRef.set({
+            visits: 1
+        });
+    }
 }
