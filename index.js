@@ -11,12 +11,13 @@ initializeApp({
 
 const db = getFirestore();
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     res.sendFile(getRandomImagePath(), (err) => {
         if (err) {
             res.status(err.status).end();
         }
     });
+    await incrementSiteVisits('/');
 });
 
 app.get('/:id', async (req, res) => {
@@ -29,31 +30,35 @@ app.get('/:id', async (req, res) => {
         });
         await incrementImageViews(req.params.id);
     } else {
-        return res.json({
+        res.json({
             error: 'Image not found'
         });
     }
+    await incrementSiteVisits(`/${req.params.id}`);
 });
 
 app.get('/api/stats', async (req, res) => {
     const data = await db.collection('image_stats').orderBy('views', 'desc').get();
-    return res.json(data.docs.map(doc => {
+    res.json(data.docs.map(doc => {
         return {
             id: doc.id,
             views: doc.data().views
         };
     }));
+    await incrementSiteVisits('/api/stats');
 });
 
-app.get('/api/list', (req, res) => {
-   return res.json(getAllImageIds());
+app.get('/api/list', async (req, res) => {
+   res.json(getAllImageIds());
+    await incrementSiteVisits('/api/list');
 });
 
-app.get('/api/random', (req, res) => {
-    return res.json(getRandomImageApi());
+app.get('/api/random', async (req, res) => {
+    res.json(getRandomImageApi());
+    await incrementSiteVisits('/api/random');
 });
 
-app.get('/api/:id', (req, res) => {
+app.get('/api/:id', async (req, res) => {
     const image = getImageById(req.params.id, false);
     if (image) {
         res.json({
@@ -65,6 +70,7 @@ app.get('/api/:id', (req, res) => {
             error: 'Image not found'
         });
     }
+    await incrementSiteVisits(`/api/${req.params.id}`);
 });
 
 const port = process.env.PORT || 3000;
@@ -129,3 +135,11 @@ const incrementImageViews = async (id) => {
         });
     }
 };
+
+const incrementSiteVisits = async (path) => {
+    const docRef = db.collection('site_stats').doc('visits');
+    await docRef.create({
+        path: path,
+        time: FieldValue.serverTimestamp(),
+    });
+}
