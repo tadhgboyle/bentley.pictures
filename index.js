@@ -137,9 +137,8 @@ const incrementImageViews = async (id) => {
 };
 
 const incrementSiteVisits = async (path) => {
-    const docRef = db.collection('site_stats').doc('visits');
+    const docRef = db.collection('site_visits').doc(path);
     await docRef.create({
-        path: path,
         time: FieldValue.serverTimestamp(),
     });
 }
